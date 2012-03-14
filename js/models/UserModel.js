@@ -27,7 +27,7 @@ define(
 			  */
 			validate : function( attrs ) {
 				if ( !attrs.name ) {
-					throw new Error( "The User object does not validate." ); 
+					return "The User object does not validate."; 
 				}
 			}
 		});

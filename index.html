@@ -9,6 +9,7 @@
     <script type="text/template" id="create-task-template">
         <div class="create-task-holder">
             <form method="POST" id="create-task-form">
+            <span id="validationText">* You cannot leave this blank</span><br/>
                 <input type="text" name="task-content" class="task-content" size="60" />
         		<select name="select-category" id="create-task-select-category" class="task-category">
                     <% _.each( category, function( category ) { %>
@@ -16,8 +17,10 @@
                     <% }); %>
                 </select>
                 <input type="button" name="task-submit" id="submit-task-form" value="Add task" />
-        	</form>
-            <input type="button" name="clear-completed" id="clear-completed" value="Clear completed tasks" />
+                <input type="button" name="clear-completed" id="clear-completed" value="Clear completed tasks" />
+                <input type="text" name="category-content" id="category-content" />
+                <input type="button" name="create-category" id="create-category" value="Create category" />
+            </form>
         </div>
     </script>
 

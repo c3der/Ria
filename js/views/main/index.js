@@ -4,10 +4,11 @@ define(
 		'Underscore',
 		'Backbone',
 		'models/TaskModel',
-		'lib/backbone/backbone.localStorage'
+		'lib/backbone/backbone.localStorage',
+		'models/CategoryModel'
 	],
 
-	function( $, _, Backbone, TaskModel ) {
+	function( $, _, Backbone, TaskModel, CategoryModel ) {
 		var mainIndexView = Backbone.View.extend({
 			
 			initialize : function( categoryCollection, taskCollection, userCollection ) {
@@ -17,12 +18,14 @@ define(
 				this.userCollection = userCollection;
 
 				this.taskCollection.bind( 'add', this.addOne, this );
+				this.categoryCollection.bind( 'add', this.render, this );
 			},
 
 			events : {
 			    'click #clear-completed' : 'clearCompleted',
 				'click #submit-task-form' : 'submitForm',
-				'keypress .task-content' : 'addOnEnter'
+				'keypress .task-content' : 'addOnEnter',
+				'click #create-category' : 'createCategory',
 			},
 
 			addOne : function( taskModel ) {
@@ -30,6 +33,13 @@ define(
 
 				// Reset the text-input-field.
 				$('.task-content').val('')
+			},
+
+			addCategory : function( categoryModel ) {
+				categoryModel.save();
+
+				// Reset the text-input-field.
+				$('#category-content').val('');
 			},
 			
 			clearCompleted : function () {
@@ -58,6 +68,8 @@ define(
 				this.$el.html( this.template({
 					category : this.categoryCollection.models
 				}));
+
+				return this;
 			},
 
 			submitForm : function( e ) {
@@ -67,18 +79,34 @@ define(
 				var category = this.categoryCollection.get( taskCategoryId );
 				var user = this.userCollection.at( 0 );
 				
+				var taskModel =	new TaskModel({
+					content : taskContent,
+					time : ( new Date() ).getTime(),
+					completed : false,
+					user : user,
+					category : category
+				});
+                    
+                if(taskModel.isValid()) {
+                	$('#validationText').css('visibility', 'hidden');
+                    this.taskCollection.add(taskModel);
+                }
+                else
+                {
+                    category.get("task").remove(taskModel);
+                    $('#validationText').css('visibility', 'visible');
+                }
+					   
+			},
+
+			createCategory : function( e ) {
+				
+				var labelInput = this.$('#category-content').val();
+
 				try {
-
-					this.taskCollection.create({
-						content : taskContent,
-						time : ( new Date() ).getTime(),
-						completed : false,
-						user : user,
-						category : category
-					});
-
+					this.categoryCollection.create( { label :labelInput } );
 				} catch( error ) {
-					console.log( "Error: ", error.message );
+					console.log('Could not create category');
 				}
 			}
 		});

@@ -25,8 +25,8 @@ define([
 			  * (throw error in backbone.) does not run set or save on model.
 			  */
 			validate : function( attrs ) {
-			if (  !attrs.label ) {
-			       throw new Error( "The category object does not validate." ); 
+				if (  !attrs.label ) {
+				       return "The category object does not validate."; 
 				}
 			}
 		});

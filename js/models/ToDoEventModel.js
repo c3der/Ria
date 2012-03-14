@@ -20,7 +20,7 @@ define(
 			  */
 			validate : function( attrs ) {
 				if (  !attrs.name || !attrs.time || !attrs.userId ) {
-					throw new Error( "The ToDoEvent object does not validate." ); 
+					return "The ToDoEvent object does not validate."; 
 				}
 			}
 	});
